@@ -289,7 +289,7 @@ describe("scenarios > collection_defaults", () => {
       signInAsAdmin();
     });
 
-    it.only("should see/save to a child collection even when access to its parent collection has been revoked (metabase#14052)", () => {
+    it.skip("should see/save to a child collection even when access to its parent collection has been revoked (metabase#14052)", () => {
       // Create Parent collection within `Our analytics`
       cy.request("POST", "/api/collection", {
         name: "Parent",
