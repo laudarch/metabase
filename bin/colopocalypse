@@ -43,7 +43,7 @@ const varForName = name => `--color-${name}`;
 const colors = {
   // themeable colors
 
-  brand: "#f9d45c",
+  brand: "#2256ab",
 
   accent1: "#9CC177",
   accent2: "#A989C5",

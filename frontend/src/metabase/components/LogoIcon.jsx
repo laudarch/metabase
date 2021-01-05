@@ -18,7 +18,7 @@ class DefaultLogoIcon extends Component {
     const { dark, height, width } = this.props;
     return (
       <img
-        src={"https://pbs.twimg.com/profile_images/694522725738618880/hdNaWoIm_400x400.png"}
+        src={"http://tracking.unipassghana.com/app/img/logo_sm.png"}
         width={width}
         height={height}
       />

@@ -90,6 +90,9 @@ const DataFieldsPicker = ({ className, query, updateQuery }) => {
       onSelectAll={() => {
 
         selected.splice(0,selected.length);
+        dimensions.forEach((di) => {
+          selected.push(di);
+        });
         let aa = selected
           .map(d => d.mbql());
 
@@ -101,7 +104,7 @@ const DataFieldsPicker = ({ className, query, updateQuery }) => {
 
           }
       }
-      isAll={true}
+      isAll={selected.length === selectedDimensions.length}
       onSelectNone={() => {
           // query.setFields("").update(updateQuery);
           // isset = false;
