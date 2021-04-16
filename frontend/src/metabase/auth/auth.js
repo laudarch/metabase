@@ -8,7 +8,6 @@ import { push } from "react-router-redux";
 
 import MetabaseAnalytics from "metabase/lib/analytics";
 import { clearGoogleAuthCredentials } from "metabase/lib/auth";
-
 import { refreshSiteSettings } from "metabase/redux/settings";
 import { refreshCurrentUser } from "metabase/redux/user";
 
@@ -22,49 +21,49 @@ export const login = createThunkAction(
     // NOTE: this request will return a Set-Cookie header for the session
     console.log(credentials);
 
-    // var res = await fetch("http://localhost:3000/api/session/stakeholder/login",{
-    //   method: "POST",
-    //   body: JSON.stringify(credentials),
-    //   headers: {
-    //     "Accept": "application/json",
-    //     "Content-Type": "application/json"
-    //   }
-    // });
-    //
-    // let email = credentials.username+"@icums.gov.gh";
-    //
-    // var dataRes = JSON.parse((await res.json()).response);
-    //
-    // if (dataRes.code !== 1 ) {
-    //     throw new Error(dataRes.message);
-    // }
-    //
-    //  res = await fetch("http://localhost:3000/api/session/new/user",{
-    //   method: "POST",
-    //    body: JSON.stringify({
-    //      "first_name": "aa",
-    //      "last_name": "aa",
-    //      "email": email,
-    //      "password": credentials.password
-    //    }),
-    //   headers: {
-    //     "Accept": "application/json",
-    //     "Content-Type": "application/json",
-    //     "X-Metabase-Session": "64fbbd4b-332b-4c3a-8674-7acbe0448235",
-    //     "Cookie": "_gat=1; metabase.SESSION=c04e6a88-8722-4fca-a3d2-49f31027c02a; _ga=GA1.1.1127674770.1618312314; _gid=GA1.1.1413612198.1618312314"
-    //   },
-    // });
-    //
-    // try {
-    //   dataRes = (await res.json());
-    //   console.log(dataRes);
-    //   if (dataRes.errors !== undefined) {
-    //     //user already exist
-    //
-    //   }
-    // }catch (e) {
-    //   throw new Error("Error");
-    // }
+    var res = await fetch("http://localhost:3000/api/session/stakeholder/login",{
+      method: "POST",
+      body: JSON.stringify(credentials),
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      }
+    });
+
+    let email = credentials.username+"@icums.gov.gh";
+
+    var dataRes = JSON.parse((await res.json()).response);
+
+    if (dataRes.code !== 1 ) {
+        throw new Error(dataRes.message);
+    }
+
+     res = await fetch("http://localhost:3000/api/session/new/user",{
+      method: "POST",
+       body: JSON.stringify({
+         "first_name": "aa",
+         "last_name": "aa",
+         "email": email,
+         "password": credentials.password
+       }),
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "X-Metabase-Session": "64fbbd4b-332b-4c3a-8674-7acbe0448235",
+        "Cookie": "_gat=1; metabase.SESSION=c04e6a88-8722-4fca-a3d2-49f31027c02a; _ga=GA1.1.1127674770.1618312314; _gid=GA1.1.1413612198.1618312314"
+      },
+    });
+
+    try {
+      dataRes = (await res.json());
+      console.log(dataRes);
+      if (dataRes.errors !== undefined) {
+        //user already exist
+
+      }
+    }catch (e) {
+      throw new Error("Error");
+    }
 
     console.log("all done");
     // credentials.username = email;
