@@ -51,30 +51,106 @@ export default connect(state => ({ databases: getDatabasesList(state) }))(
 
 import FieldsPicker from "./FieldsPicker";
 
+var isset = false;
+const selected = []
 const DataFieldsPicker = ({ className, query, updateQuery }) => {
   const dimensions = query.tableDimensions();
   const selectedDimensions = query.columnDimensions();
-  const selected = new Set(selectedDimensions.map(d => d.key()));
-  const fields = query.fields();
+  console.log(selectedDimensions);
+
+  window.a = selectedDimensions;
+
+  console.log("is  new "+isset);
+
+  function removeAll(originalSet, toBeRemovedSet) {
+    [...toBeRemovedSet].forEach(function(v) {
+      originalSet.delete(v);
+    });
+  }
+
+  function doExist(obj) {
+
+    for (var i=0;i<selected.length;i++) {
+      if (obj._args[0] === selected[i]._args[0]) {
+        selected.splice(i,1);
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+
   return (
     <FieldsPicker
       className={className}
       dimensions={dimensions}
-      selectedDimensions={selectedDimensions}
-      isAll={!fields || fields.length === 0}
-      onSelectAll={() => query.clearFields().update(updateQuery)}
-      onToggleDimension={(dimension, enable) => {
+      selectedDimensions={selected}
+      isNone={true}
+      onSelectAll={() => {
+
+        selected.splice(0,selected.length);
+        let aa = selected
+          .map(d => d.mbql());
+
         query
           .setFields(
-            dimensions
-              .filter(d => {
-                if (d === dimension) {
-                  return !selected.has(d.key());
-                } else {
-                  return selected.has(d.key());
-                }
-              })
-              .map(d => d.mbql()),
+            aa
+          )
+          .update(updateQuery);
+
+      }
+      }
+      isAll={true}
+      onSelectNone={() => {
+        // query.setFields("").update(updateQuery);
+        // isset = false;
+
+        selected.splice(0,selected.length);
+
+        let aa = selected
+          .map(d => d.mbql());
+
+        query
+          .setFields(
+            aa
+          )
+          .update(updateQuery);
+
+
+      }}
+      onToggleDimension={(dimension, enable) => {
+
+        console.log("update query");
+        console.log(updateQuery);
+
+        console.log(" query");
+        console.log(query);
+
+        isset = true;
+
+
+        //if dimension is selected we add it
+        if (doExist(dimension)) {
+          console.log("exist")
+        }else {
+          selected.push(dimension);
+        }
+
+        console.log("selected");
+        console.log(selected);
+        console.log(dimension);
+
+
+        let dd = selected
+          .map(d => d.mbql());
+
+
+        console.log("dimensions are "+dd);
+
+        query
+          .setFields(
+            dd
           )
           .update(updateQuery);
       }}
