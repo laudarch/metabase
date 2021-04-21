@@ -247,6 +247,15 @@
   (api/check-500 (db/update! User id, :is_active false))
   {:success true})
 
+(api/defendpoint DELETE "/delete/:id"
+  "Delete a `User`.  This does not remove the `User` from the DB, but instead disables their account."
+  [id]
+  (api/check-superuser)
+  (api/check-500 (db/delete! User id))
+  {:success true})
+
+
+
 ;;; +----------------------------------------------------------------------------------------------------------------+
 ;;; |                  Other Endpoints -- PUT /api/user/:id/qpnewb, POST /api/user/:id/send_invite                   |
 ;;; +----------------------------------------------------------------------------------------------------------------+

@@ -21,7 +21,7 @@ export const login = createThunkAction(
     // NOTE: this request will return a Set-Cookie header for the session
     console.log(credentials);
 
-    var res = await fetch("http://localhost:3000/api/session/stakeholder/login",{
+    var res = await fetch("/api/session/stakeholder/login",{
       method: "POST",
       body: JSON.stringify(credentials),
       headers: {
@@ -38,7 +38,7 @@ export const login = createThunkAction(
         throw new Error(dataRes.message);
     }
 
-     res = await fetch("http://localhost:3000/api/session/new/user",{
+     res = await fetch("/api/session/new/user",{
       method: "POST",
        body: JSON.stringify({
          "first_name": "aa",
@@ -66,10 +66,9 @@ export const login = createThunkAction(
     }
 
     console.log("all done");
-    // credentials.username = email;
+    credentials.username = email;
 
     let ress = await SessionApi.create(credentials);
-
 
     console.log(ress);
 
