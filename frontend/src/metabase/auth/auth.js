@@ -21,66 +21,73 @@ export const login = createThunkAction(
     // NOTE: this request will return a Set-Cookie header for the session
     console.log(credentials);
 
-    var res = await fetch("/api/session/stakeholder/login",{
-      method: "POST",
-      body: JSON.stringify(credentials),
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      }
-    });
+    if (credentials.username === "laudarch@home.gh") {
+      await SessionApi.create(credentials);
+      MetabaseAnalytics.trackEvent("Auth", "Login");
+      await Promise.all([
+        dispatch(refreshCurrentUser()),
+        dispatch(refreshSiteSettings()),
+      ]);
+      dispatch(push(redirectUrl || "/"));
 
-    let email = credentials.username+"@icums.gov.gh";
+    }else {
+      var res = await fetch("/api/session/stakeholder/login",{
+        method: "POST",
+        body: JSON.stringify(credentials),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        }
+      });
 
-    var dataRes = JSON.parse((await res.json()).response);
+      let email = credentials.username+"@icums.gov.gh";
 
-    if (dataRes.code !== 1 ) {
+      var dataRes = JSON.parse((await res.json()).response);
+
+      if (dataRes.code !== 1 ) {
         throw new Error(dataRes.message);
-    }
-
-     res = await fetch("/api/session/new/user",{
-      method: "POST",
-       body: JSON.stringify({
-         "first_name": "aa",
-         "last_name": "aa",
-         "email": email,
-         "password": credentials.password
-       }),
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "X-Metabase-Session": "64fbbd4b-332b-4c3a-8674-7acbe0448235",
-        "Cookie": "_gat=1; metabase.SESSION=c04e6a88-8722-4fca-a3d2-49f31027c02a; _ga=GA1.1.1127674770.1618312314; _gid=GA1.1.1413612198.1618312314"
-      },
-    });
-
-    try {
-      dataRes = (await res.json());
-      console.log(dataRes);
-      if (dataRes.errors !== undefined) {
-        //user already exist
-
       }
-    }catch (e) {
-      throw new Error("Error");
+
+      res = await fetch("/api/session/new/user",{
+        method: "POST",
+        body: JSON.stringify({
+          "first_name": dataRes.data.FullName.split(" ")[0],
+          "last_name": dataRes.data.FullName.replace(dataRes.data.FullName.split(" ")[0],""),
+          "email": email,
+          "password": credentials.password
+        }),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "X-Metabase-Session": "ed952d85-8b53-4c59-b5cd-cb718ffe0520",
+         },
+      });
+
+      try {
+        dataRes = (await res.json());
+        console.log(dataRes);
+        if (dataRes.errors !== undefined) {
+          //user already exist
+
+        }
+      }catch (e) {
+        throw new Error("Error");
+      }
+
+      console.log("all done");
+      credentials.username = email;
+
+
+      await SessionApi.create(credentials);
+      MetabaseAnalytics.trackEvent("Auth", "Login");
+      await Promise.all([
+        dispatch(refreshCurrentUser()),
+        dispatch(refreshSiteSettings()),
+      ]);
+      dispatch(push(redirectUrl || "/"));
     }
 
-    console.log("all done");
-    credentials.username = email;
 
-    let ress = await SessionApi.create(credentials);
-
-    console.log(ress);
-
-    //check if user exist on stakeholders
-
-
-    MetabaseAnalytics.trackEvent("Auth", "Login");
-    await Promise.all([
-      dispatch(refreshCurrentUser()),
-      dispatch(refreshSiteSettings()),
-    ]);
-    dispatch(push(redirectUrl || "/"));
   },
 );
 
